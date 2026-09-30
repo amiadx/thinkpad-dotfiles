@@ -1,0 +1,84 @@
+configuration {
+    modi: "window,run,drun";
+    font: "JetBrains Mono 12"; 
+    kb-cancel: "Escape";
+}
+
+* {
+    background:                  #000000;
+    background-alt:              #000000;
+    foreground:                  #ffffff;
+    selected-background:         #ffffff;
+    selected-foreground:         #000000;
+    border-color:                #ffffff;
+
+    background-color:            transparent;
+    text-color:                  @foreground;
+}
+
+window {
+    background-color:            @background;
+    border:                      2px;
+    border-color:                @border-color;
+    border-radius:               0px;
+    width:                       500px;
+    padding:                     20px;
+}
+
+mainbox {
+    children:                    [ inputbar, listview ];
+    spacing:                     15px;
+}
+
+inputbar {
+    padding:                     8px 12px;
+    background-color:            @background-alt;
+    border:                      1px;
+    border-color:                @border-color;
+    children:                    [ prompt, entry ];
+}
+
+prompt {
+    text-color:                  @foreground;
+    margin:                      0px 10px 0px 0px;
+}
+
+entry {
+    text-color:                  @foreground;
+    placeholder:                 "...";
+    placeholder-color:           #555555;
+}
+
+listview {
+    lines:                       8;
+    columns:                     1;
+    fixed-height:                true;
+    cycle:                       true;
+    scrollbar:                   false;
+}
+
+element {
+    padding:                     6px 10px;
+    cursor:                      pointer;
+}
+
+element normal.normal {
+    background-color:            @background;
+    text-color:                  @foreground;
+}
+
+element selected.normal {
+    background-color:            @selected-background;
+    text-color:                  @selected-foreground;
+}
+
+element alternate.normal {
+    background-color:            @background;
+    text-color:                  @foreground;
+}
+
+element-text {
+    background-color:            transparent;
+    text-color:                  inherit;
+    cursor:                      inherit;
+}
