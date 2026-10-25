@@ -1,16 +1,14 @@
-
 {
 	"reload_style_on_change": true,
     "position": "top",
     "height": 5,
-    "modules-left": ["niri/workspaces", "keyboard-state"],
+    "modules-left": ["battery", "niri/workspaces"],
     "modules-center": ["niri/window"],
-    "modules-right": ["pulseaudio", "network", "battery", "clock", "group/tray-drawer"],
-
+    "modules-right": ["pulseaudio", "wireplumber#source", "network", "bluetooth", "clock", "group/tray-drawer"],
     "group/tray-drawer": {
         "orientation": "horizontal",
         "drawer": {
-            "transition-duration": 200,
+            "transition-duration": 150,
             "transition-left-to-right": true
         },
         "modules": [
@@ -18,7 +16,6 @@
             "tray"
         ]
     },
-    
     "custom/tray-icon": {
         "format": " ",
         "tooltip": false
@@ -29,43 +26,53 @@
         "show-passive-items": false
     },
     "clock": {
-        "format": "{:%I:%M%p }",
-        "format-alt": "{:%Y-%m-%d}"
-      
+        "format": "{:%I:%M%p}",
+        "tooltip": true,
+        "tooltip-format": "{:%A, %B %d, %Y}"
     },
     "battery": {
         "states": {
-            "good": 95,
-            "warning": 30,
-            "critical": 15
+            "warning": 25,
+            "danger": 10,
+            "critical": 5
         },
-        "format": "bat:{capacity}%",
-        "format-charging": "char:{capacity}%",
-        "format-plugged": "plug:{capacity}%",
-        "format-alt": "{time}"
+        "format": "{capacity}%",
+        "format-charging": "{capacity}%",
+    },
+    "bluetooth": {
+    	"format": "blu:on",
+    	"format-disabled": "blu:off",
+    	"format-connected": "blu:{num_connections}",
+    	"format-no-controller": "no bluetooth cont",
+    	"tooltip-format": "{device_alias}",
+    	"tooltip-format-connected": "{device_enumerate}",
+    	"on-click": "kitty bluetui"
     },
     "network": {
-        "format-wifi": "wifi:{signalStrength}%",
+        "format-wifi": "net:{signalStrength}%",
         "format-ethernet": "eth:{ifname}",
-        "format-linked": "no ip:{ifname}",
-        "format-disconnected": "disconn",
-        "format-alt": "{ifname}:{ipaddr}/{cidr}",
-
-        "tooltip-format": "{essid}"
+        "format-linked": "no ip/dhcp:{ifname}",
+        "format-disconnected": "disconnected",
+        "tooltip-format": "{essid} via {ifname} at {ipaddr}/{cidr}",
+        "on-click": "kitty impala"
+    },
+    "wireplumber#source": {
+    	"states": {
+    		"vol0": 0,
+    		"normal": 1
+    	},
+    	"node-type": "Audio/Source",
+    	"format": "mic:{volume}%",
+    	"format-muted": "mic:0%",
+    	"on-click": "pavucontrol -t 4"
     },
     "pulseaudio": {
+    	"states": {
+    		"vol0": 0,
+    		"normal": 1
+    	},
         "format": "vol:{volume}%",
-        "format-bluetooth": "blue:{volume}%",
-        "format-bluetooth-muted": "mute blue",
-        "format-muted": "mute",
-        "on-click": "pavucontrol"
-    },
-    "keyboard-state": {
-        "capslock": true,
-        "format": "{icon}",
-        "format-icons": {
-            "locked": " CAPS ",
-            "unlocked": ""
-        }
+        "format-muted": "vol:0%",
+        "on-click": "pavucontrol -t 3"
     }
 }

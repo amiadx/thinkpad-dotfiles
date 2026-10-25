@@ -25,5 +25,20 @@ mkz() {
   mkdir -p "$1" && z "$1"
 }
 
-# ls config
-alias ls='ls -lah --color=auto'
+# power stuff
+alias lcpo="loginctl poweroff"
+alias lcrb="loginctl reboot"
+alias lcss="loginctl suspend"
+
+alias ls="ls -Fa --color=auto"
+alias lah="ls -lahF --color=auto"
+
+alias please='sudo $(fc -ln -1)'
+
+# easier copy and pasting
+alias nano="micro"
+
+alias neofetch="fastfetch"
+
+export PATH=$PATH:/home/amia/.spicetify
+export EDITOR=micro

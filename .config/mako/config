@@ -4,3 +4,4 @@ text-color=#FFFFFFFF
 border-size=1
 border-color=#FFFFFFFF
 default-timeout=10000
+layer=overlay

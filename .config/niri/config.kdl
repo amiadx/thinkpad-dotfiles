@@ -1,4 +1,4 @@
-// thinkpad t460 config
+// thinkpad x13 gen 4 on artix config
 // this config is structured to follow the docs
 
 input {
@@ -6,13 +6,13 @@ input {
         xkb {
             layout "us"
         }
-        numlock
     }
     
     touchpad {
-        tap
         natural-scroll
         accel-speed -0.1
+
+        drag false
     }
 
     mouse {
@@ -29,7 +29,8 @@ input {
 }
 
 output "eDP-1" {
-	mode "1920x1080@60.008"
+	mode "1920x1200@60.003"
+	variable-refresh-rate
 	scale 1.25
 	backdrop-color "#000000"
 }
@@ -38,17 +39,19 @@ output "eDP-1" {
 binds {
     Mod+Q repeat=false { spawn "kitty"; }
     Mod+Space repeat=false  { spawn-sh "rofi -show drun"; }
+   
 	Mod+B repeat=false { spawn "helium-browser"; }
-    Super+Alt+L repeat=false { spawn "hyprlock"; }
-
-    XF86AudioMute        allow-when-locked=true { spawn-sh "wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle"; }
+    Super+Alt+L allow-when-locked=true repeat=false { spawn "hyprlock"; }
+	
+    XF86AudioMute        allow-when-locked=true repeat=false { spawn-sh "wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle"; }
     XF86AudioRaiseVolume allow-when-locked=true { spawn-sh "wpctl set-volume @DEFAULT_AUDIO_SINK@ 0.05+ -l 1.0"; }
     XF86AudioLowerVolume allow-when-locked=true { spawn-sh "wpctl set-volume @DEFAULT_AUDIO_SINK@ 0.05-"; }
-    XF86AudioMicMute     allow-when-locked=true { spawn-sh "wpctl set-mute @DEFAULT_AUDIO_SOURCE@ toggle"; }
+    XF86AudioMicMute     allow-when-locked=true repeat=false { spawn "~/.local/bin/toggle-mic.sh"; }
 
     XF86MonBrightnessUp allow-when-locked=true { spawn "brightnessctl" "--class=backlight" "set" "+10%"; }
     XF86MonBrightnessDown allow-when-locked=true { spawn "brightnessctl" "--class=backlight" "set" "10%-"; }
 
+	XF86NotificationCenter repeat=false { spawn "~/.local/bin/f9-button-discord.sh"; }
 	XF86Tools repeat=false { spawn "kitty"; }
 	XF86Search repeat=false { spawn-sh "rofi -show drun"; }
 	XF86LaunchA repeat=false { toggle-overview; }
@@ -170,25 +173,34 @@ workspace "discord"
 workspace "music"
 
 // misc
-spawn-at-startup "soteria"
-spawn-at-startup "waybar"
+// lots of sleep commands to prevent race conditions
+spawn-at-startup "dbus-update-activation-environment" "--all"
+spawn-at-startup "gnome-keyring-daemon" "--start" "--components=secrets,ssh"
+
+spawn-at-startup "pipewire"
+spawn-sh-at-startup "sleep 0.5 && pipewire-pulse"
+spawn-sh-at-startup "sleep 1 && wireplumber"
+
+spawn-at-startup "/usr/lib/polkit-gnome/polkit-gnome-authentication-agent-1"
+spawn-sh-at-startup "sleep 1.5 && waybar"
 spawn-at-startup "mako"
 
-spawn-at-startup "swayidle" "-w" \
+spawn-at-startup "swayidle" \
     "timeout" "300" "hyprlock" \
     "timeout" "600" "niri msg action power-off-monitors" \
     "resume" "niri msg action power-on-monitors" \
     "before-sleep" "hyprlock"
-
-
+    
 spawn-at-startup "swaybg" "-i" "/home/amia/.config/wallpapers/wallpaper.jpg" "-m" "fill"
+
+spawn-at-startup "tailscale" "systray"
+spawn-at-startup "warp-taskbar"
 
 spawn-at-startup "helium-browser"
 
-// there is a zero width unicode character behind the titles of concord and spotatui
-spawn-sh-at-startup "kitty --title '​concord' concord"
-spawn-sh-at-startup "kitty --title '​spotatui' sh -c 'spotatui --config /home/amia/.config/spotatui/config.yml'"
-
+// wait for network
+spawn-sh-at-startup "sleep 5 && equibop"
+spawn-sh-at-startup "sleep 5 && spotify-launcher" 
 
 hotkey-overlay {
     skip-at-startup
@@ -213,7 +225,7 @@ overview {
 }
 
 window-rule {
-	match title="Helium"
+	match app-id="helium"
 
 	open-on-workspace "browser"
 
@@ -221,22 +233,25 @@ window-rule {
 }
 
 window-rule {
-	match title="​concord"
+	match title="equibop"
+	match title="Discord"
 
 	open-on-workspace "discord"
 
 	open-maximized true
+    open-focused false
 }
 
 window-rule {
-	match title="​spotatui"
+	match app-id="spotify"
 
 	open-on-workspace "music"
 
 	open-maximized true
+    open-focused false
 }
 
-// 60hz display makes things look snappier
+// 60hz display makes things look snappier than higher hz
 animations {
     workspace-switch {
         spring damping-ratio=1.0 stiffness=1200 epsilon=0.0001
@@ -299,4 +314,10 @@ recent-windows {
         max-height 480
         max-scale 0.5
     }
+}
+
+gestures {
+	hot-corners {
+		off
+	}
 }
