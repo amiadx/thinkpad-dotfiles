@@ -53,9 +53,6 @@ binds {
     XF86MonBrightnessDown allow-when-locked=true { spawn "brightnessctl" "--class=backlight" "set" "10%-"; }
 
 	XF86NotificationCenter repeat=false { spawn "~/.local/bin/f9-button-discord.sh"; }
-	XF86Tools repeat=false { spawn "kitty"; }
-	XF86Search repeat=false { spawn-sh "rofi -show drun"; }
-	XF86LaunchA repeat=false { toggle-overview; }
 
     Mod+W repeat=false { close-window; }
 
